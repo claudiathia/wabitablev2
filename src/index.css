@@ -57,12 +57,41 @@
   animation: wabiRedBubblePulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
+@keyframes wabiFlameFlicker {
+  0%, 100% {
+    transform: scale(1) rotate(-2deg) translateY(0);
+    opacity: 1;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.65));
+  }
+  25% {
+    transform: scale(1.08, 1.14) rotate(3deg) translateY(-1px);
+    opacity: 0.92;
+    filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.9));
+  }
+  50% {
+    transform: scale(0.96, 1.04) rotate(-3deg) translateY(0.5px);
+    opacity: 1;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+  }
+  75% {
+    transform: scale(1.06, 1.12) rotate(2deg) translateY(-1px);
+    opacity: 0.95;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95));
+  }
+}
+
+.animate-flame-flicker {
+  transform-origin: center bottom;
+  animation: wabiFlameFlicker 1.4s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
   .animate-wabi-pulse,
-  .animate-red-bubble-pulse {
+  .animate-red-bubble-pulse,
+  .animate-flame-flicker {
     animation: none !important;
   }
   *, *::before, *::after {
