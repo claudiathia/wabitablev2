@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, RotateCcw, X } from 'lucide-react';
 import {
   DIETARY_LABELS,
@@ -30,7 +30,13 @@ export const ProfileQuestionnairePage: React.FC<ProfileQuestionnairePageProps> =
   onBackHome,
 }) => {
   const [step, setStep] = useState<number>(1);
-  const [completed, setCompleted] = useState<boolean>(false);
+  const [completed, setCompleted] = useState<boolean>(Boolean(profile.completed));
+
+  useEffect(() => {
+    if (!profile.completed) {
+      setCompleted(false);
+    }
+  }, [profile.completed]);
 
   const activeLifestyle =
     LIFESTYLE_OPTIONS.find((l) => l.id === profile.lifestyle) ?? LIFESTYLE_OPTIONS[1];
@@ -41,6 +47,7 @@ export const ProfileQuestionnairePage: React.FC<ProfileQuestionnairePageProps> =
     if (step < TOTAL_QUESTIONS) {
       setStep((s) => s + 1);
     } else {
+      onChange({ ...profile, completed: true });
       setCompleted(true);
     }
   };
@@ -114,14 +121,14 @@ export const ProfileQuestionnairePage: React.FC<ProfileQuestionnairePageProps> =
         className="absolute inset-0 bg-gradient-to-br from-[#632713]/65 via-[#632713]/45 to-[#EC6426]/35 backdrop-blur-[2px]"
       />
 
-      {/* Centered Pop-Up Questionnaire Box */}
+      {/* Centered Pop-Up Questionnaire / Completed My Profile Box */}
       <div className="relative z-10 w-full max-w-xl bg-[#FFFDFB] rounded-3xl border border-[#632713]/15 shadow-2xl overflow-hidden">
         {/* Top Progress Header */}
         <div className="px-6 sm:px-8 pt-6 pb-4 border-b border-[#632713]/10">
           <div className="flex items-center justify-between gap-4 mb-3">
             <span className="text-xs font-semibold text-[#EC6426]">
               {completed
-                ? 'Profile Complete'
+                ? 'My Profile · Saved'
                 : `Question ${step} of ${TOTAL_QUESTIONS}`}
             </span>
 
@@ -404,49 +411,104 @@ export const ProfileQuestionnairePage: React.FC<ProfileQuestionnairePageProps> =
           )}
 
           {completed && (
-            <div className="space-y-6">
+            <div className="space-y-5">
               <div>
                 <p className="text-xs font-semibold text-[#EC6426] mb-1">
                   Tailored Kitchen Profile Ready
                 </p>
                 <h1 className="font-[Outfit] text-2xl sm:text-3xl font-bold text-[#632713] tracking-tight">
-                  Welcome to Wabi Table, {profile.name.trim() || 'Friend'}.
+                  Welcome back, {profile.name.trim() || 'Friend'}.
                 </h1>
-                <p className="text-sm text-[#8C5845] mt-2">
-                  Your preferences are saved. Every dish on both tiers will highlight compatible proteins, bases, and UglyFood swaps.
+                <p className="text-sm text-[#8C5845] mt-1.5">
+                  Your profile details and preferences are saved. Every dish on both tiers highlights compatible proteins, bases, and UglyFood swaps.
                 </p>
               </div>
 
-              <dl className="p-5 rounded-2xl bg-[#FEF5ED] border border-[#632713]/10 space-y-3 text-sm">
-                <div className="flex justify-between gap-4">
-                  <dt className="text-[#8C5845]">Lifestyle</dt>
-                  <dd className="font-semibold text-[#632713] text-right">
-                    {activeLifestyle.label}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-4">
-                  <dt className="text-[#8C5845]">Target Portion</dt>
-                  <dd className="font-mono tabular-nums font-semibold text-[#EC6426] text-right">
-                    {activeLifestyle.kcalTarget} · {activeLifestyle.proteinFocus}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-4">
-                  <dt className="text-[#8C5845]">Primary Goal</dt>
-                  <dd className="font-semibold text-[#632713] text-right">
-                    {activeGoal.label}
-                  </dd>
-                </div>
-                <div className="pt-2 border-t border-[#632713]/10">
-                  <dt className="text-[#8C5845] mb-1">Dietary Safeguards</dt>
-                  <dd className="font-medium text-[#632713]">
-                    {profile.restrictions.length > 0
-                      ? profile.restrictions.map((r) => DIETARY_LABELS[r]).join(' · ')
-                      : 'None — all ingredients enabled'}
-                  </dd>
-                </div>
-              </dl>
+              {/* Details Card */}
+              <div className="p-5 rounded-2xl bg-[#FEF5ED] border border-[#632713]/10 space-y-3 text-sm">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#8C5845]">
+                  My Details
+                </p>
+                <dl className="space-y-2.5">
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-[#8C5845]">Kitchen Name</dt>
+                    <dd className="font-semibold text-[#632713] text-right">
+                      {profile.name.trim() || 'Wabi Kitchen Member'}
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-[#8C5845]">Lifestyle</dt>
+                    <dd className="font-semibold text-[#632713] text-right">
+                      {activeLifestyle.label}
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-[#8C5845]">Target Portion</dt>
+                    <dd className="font-mono tabular-nums font-semibold text-[#EC6426] text-right">
+                      {activeLifestyle.kcalTarget} · {activeLifestyle.proteinFocus}
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-[#8C5845]">Primary Goal</dt>
+                    <dd className="font-semibold text-[#632713] text-right">
+                      {activeGoal.label}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
 
-              <div className="flex flex-col sm:flex-row gap-3">
+              {/* Preferences Card */}
+              <div className="p-5 rounded-2xl bg-white border border-[#632713]/10 space-y-4 text-sm">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#8C5845]">
+                  My Preferences
+                </p>
+
+                <div>
+                  <p className="text-xs text-[#8C5845] mb-2">Dietary Safeguards</p>
+                  {profile.restrictions.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5">
+                      {profile.restrictions.map((r) => (
+                        <span
+                          key={r}
+                          className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#632713] text-white"
+                        >
+                          {DIETARY_LABELS[r]}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm font-medium text-[#632713]">
+                      None — all ingredients enabled
+                    </p>
+                  )}
+                </div>
+
+                <div className="pt-3 border-t border-[#632713]/10">
+                  <p className="text-xs text-[#8C5845] mb-2">Kitchen &amp; Taste Preferences</p>
+                  {profile.preferences.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5">
+                      {profile.preferences.map((prefId) => {
+                        const label =
+                          PREFERENCE_OPTIONS.find((p) => p.id === prefId)?.label ?? prefId;
+                        return (
+                          <span
+                            key={prefId}
+                            className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#FDE3CF] text-[#632713]"
+                          >
+                            {label}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text-sm font-medium text-[#632713]">
+                      Standard balanced prep
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-1">
                 <button
                   type="button"
                   onClick={() => onBackHome('subscribe')}

@@ -33,6 +33,7 @@ const DEFAULT_PROFILE: UserProfile = {
   goal: 'family-dinners',
   restrictions: [],
   preferences: ['extra-greens', 'quick-prep'],
+  completed: false,
 };
 
 const DEFAULT_PLAN: SubscriptionPlanState = {

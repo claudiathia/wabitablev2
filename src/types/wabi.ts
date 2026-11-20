@@ -35,6 +35,7 @@ export interface UserProfile {
   goal: HealthGoal;
   restrictions: DietaryRestriction[];
   preferences: TastePreference[];
+  completed?: boolean;
 }
 
 export interface SwapOption {
