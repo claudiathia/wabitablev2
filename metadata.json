@@ -1,0 +1,8 @@
+{
+  "name": "Wabi Table",
+  "description": "Fresh, healthy local meal-kit subscriptions powered by rescued produce from UglyFood. Customised to your dietary needs with everyday local and chef-curated tiers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
